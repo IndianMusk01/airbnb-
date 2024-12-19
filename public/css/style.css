@@ -76,5 +76,14 @@ listing-link{
    background-color: #fe424d !important;
    border: none !important;
 }
-/* Card Effect */
-
+/* show page */
+.show-img{
+   width: 30vh;
+}
+.btns{
+   display: flex;
+}
+.show-card{
+   padding-left: 0;
+   padding-right: 0;
+}
