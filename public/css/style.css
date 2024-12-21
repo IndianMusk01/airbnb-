@@ -35,10 +35,7 @@ body {
     font-size: 1.5rem;
     display: flex;
     align-items: center; 
-    justify-content: center;
-
-
-    
+    justify-content: center;   
  }
  .f-info-socials i{
     margin: 1rem;
@@ -66,11 +63,12 @@ body {
 .card-body{
    padding: 0 !important;
 }
-.card-text p {
+.card-text  p {
    font-weight: 400 !important;
+   text-decoration: none !important;
 }
-listing-link{
-   text-decoration: none;
+.listing-link a {
+   text-decoration: none !important;
 }
 .add-btn{
    background-color: #fe424d !important;
