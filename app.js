@@ -77,7 +77,6 @@ app.delete("/listings/:id",  wrapAsync(async (req, res) => {
     res.redirect('/listings');
 }));
 
-
 app.get('/', (req, res) => {
     res.redirect('/listings'); // Redirect to listings route
 });
