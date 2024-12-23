@@ -1,14 +1,14 @@
 <% layout("/layouts/boilerplate") %>
 <body>
     <div class="row">
-        <div class="col-8 offset-2 show-card">
-            <h3>Listing Details:</h3>
+        <div class="col-8 offset-3 show-card">
+            <h3><b><%= listing.title %></b></h3>
             </div>
             <div class="card col-6 offset-3 show-img">
                 <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing_image">
                 <div class="card-body">
                 <p class="card-text">
-                    <b><%= listing.title %></b>  <br> 
+                     <br> 
                     <%= listing.description %> <br>
                     &#8377; <%= listing.price %> <br>
                     <%= listing.location %> <br>
@@ -22,6 +22,22 @@
                 <a href="/listings/<%= listing._id%>/edit" class="btn btn-dark col-1 offset-3 add-btn">Edit</a>
                 <form method="post" action="/listings/<%=listing._id%>?_method=DELETE">
                     <button class="btn btn-dark  offset-5">Delete</button>
+                </form>
+            </div>
+
+            <div class="col-8 offset-3">
+                <hr>
+                <h4>Leave a Review</h4>
+                <form>
+                    <div class="mb-3 mt-3">
+                        <label for ="rating" class="form-label">Rating</label>
+                        <input type="range" min="1" max="5" name="review[rating]"  id="rating">
+                    </div>
+                    <div class="mb-3 mt-3">
+                        <label for = "comment" class="form-label">Comment</label>
+                        <textarea name="review[comment]" class="form-control" id="comment"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-dark">Submit</button>
                 </form>
             </div>
             
