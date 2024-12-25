@@ -41,6 +41,18 @@
                     </div>
                     <button type="submit" class="btn btn-dark">Submit</button>
                 </form>
+
+                <hr/>
+
+                <h4>All Reviews</h4>
+               <ul>
+                <% for(let review of listing.reviews) { %>
+                  <li>
+                    <b>Rating:</b> <%= review.rating %> <br>
+                    <b>Comment:</b> <%= review.comment %> <br>
+                <% } %>
+
+               </ul>
             </div>
             
 
