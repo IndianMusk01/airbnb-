@@ -7,7 +7,7 @@ const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const wrapAsync = require('./utils/wrapAsync.js');
 const ExpressError = require('./utils/ExpressError.js');
-const { listingSchema } = require('./schema.js');
+const { listingSchema,reviewSchema } = require('./schema.js');
 const Review = require('./models/review.js');
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
@@ -78,7 +78,7 @@ app.delete("/listings/:id",  wrapAsync(async (req, res) => {
 }));
 
 //Reviews Post Route
-app.post('/listings/:id/reviews', async (req, res) => {
+app.post('/listings/:id/reviews', validateReview,wrapAsync(async (req, res) => {
     let listing = await Listing.findById(req.params.id);
     let newReview = new Review(req.body.review);
 
@@ -88,7 +88,7 @@ app.post('/listings/:id/reviews', async (req, res) => {
 
     res.redirect(`/listings/${listing._id}`);
     // res.send("Review saved");
-});
+}));
 
 
 app.get('/', (req, res) => {
@@ -122,6 +122,15 @@ app.get('/listings/:id', wrapAsync(async (req, res) => {
         res.status(500).send('Server error');
     }
 }));
+
+const validateReview = (req, res, next) => {
+    let{error} = reviewSchema.validate(req.body);
+    if(error){
+        throw new ExpressError(result.error, 400);
+    } else {
+        next();
+    }
+};
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404));
