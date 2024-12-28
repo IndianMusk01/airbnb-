@@ -90,6 +90,14 @@ app.post('/listings/:id/reviews', validate(reviewSchema), wrapAsync(async (req, 
     res.redirect(`/listings/${listing._id}`);
 }));
 
+// Delete Review
+app.delete('/listings/:id/reviews/:reviewId', wrapAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/listings/${id}`);
+}));
+
 // Show Listing with Reviews
 app.get('/listings/:id', wrapAsync(async (req, res) => {
     const id = req.params.id.trim();
