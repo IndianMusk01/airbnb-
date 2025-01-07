@@ -32,6 +32,7 @@ app.use(flash());
 
 app.use((req,res,next)=>{
     res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
     next();
 });
 
@@ -134,8 +135,9 @@ app.get('/listings/:id', wrapAsync(async (req, res) => {
         throw new ExpressError('Invalid ID format', 400);
     }
     const listing = await Listing.findById(id).populate('reviews');
-    if (!listing) {
-        throw new ExpressError("Listing not found", 404);
+    if(!listing){
+        req.flash('error', 'Cannot find that listing!');
+        res.redirect('/listings');
     }
     res.render('listings/show.ejs', { listing });
 }));
