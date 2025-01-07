@@ -32,7 +32,6 @@ app.use(flash());
 
 app.use((req,res,next)=>{
     res.locals.success = req.flash('success');
-    res.locals.error = req.flash('error');
     next();
 });
 
@@ -93,6 +92,7 @@ app.get("/listings/:id/edit", wrapAsync(async (req, res) => {
 app.put("/listings/:id", validate(listingSchema), wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndUpdate(id, req.body.listing);
+    req.flash('success', 'Successfully updated a listing!');
     res.redirect(`/listings/${id}`);
 }));
 
@@ -100,6 +100,7 @@ app.put("/listings/:id", validate(listingSchema), wrapAsync(async (req, res) => 
 app.delete("/listings/:id", wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndDelete(id);
+    req.flash('success', 'Successfully deleted a listing!');
     res.redirect('/listings');
 }));
 
@@ -113,6 +114,7 @@ app.post('/listings/:id/reviews', validate(reviewSchema), wrapAsync(async (req, 
     listing.reviews.push(newReview);
     await newReview.save();
     await listing.save();
+    req.flash('success', 'Successfully made a new review!');
     res.redirect(`/listings/${listing._id}`);
 }));
 
@@ -121,6 +123,7 @@ app.delete('/listings/:id/reviews/:reviewId', wrapAsync(async (req, res) => {
     const { id, reviewId } = req.params;
     await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);
+    req.flash('success', 'Successfully deleted a review!');
     res.redirect(`/listings/${id}`);
 }));
 
