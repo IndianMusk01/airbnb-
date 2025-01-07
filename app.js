@@ -9,6 +9,7 @@ const wrapAsync = require('./utils/wrapAsync.js');
 const ExpressError = require('./utils/ExpressError.js');
 const { listingSchema, reviewSchema } = require('./schema.js');
 const session = require('express-session');
+const flash = require('connect-flash');
 
 
 const app = express();
@@ -19,9 +20,21 @@ const sessionOptions = {
     secret: "mysupersecretcode",
     resave: false,
     saveUninitialized: true,
+    cookie:{
+        expires:Date.now() + 7*24*60*60*1000,
+        maxAge:7*24*60*60*1000,
+        HttpOnly:true,
+    }
 }
 
 app.use(session(sessionOptions));
+app.use(flash());
+
+app.use((req,res,next)=>{
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+});
 
 
 // Connect to MongoDB
@@ -62,6 +75,7 @@ app.get("/listings/new", (req, res) => {
 app.post("/listings", validate(listingSchema), wrapAsync(async (req, res) => {
     const newListing = new Listing(req.body.listing);
     await newListing.save();
+    req.flash('success', 'Successfully made a new listing!');
     res.redirect('/listings');
 }));
 
