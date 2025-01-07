@@ -8,9 +8,21 @@ const Review = require('./models/review.js');
 const wrapAsync = require('./utils/wrapAsync.js');
 const ExpressError = require('./utils/ExpressError.js');
 const { listingSchema, reviewSchema } = require('./schema.js');
+const session = require('express-session');
+
 
 const app = express();
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+app.use(express.static(path.join(__dirname, 'public')));
+
+const sessionOptions = {
+    secret: "mysupersecretcode",
+    resave: false,
+    saveUninitialized: true,
+}
+
+app.use(session(sessionOptions));
+
 
 // Connect to MongoDB
 async function main() {
