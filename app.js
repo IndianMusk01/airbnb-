@@ -166,10 +166,20 @@ app.get('/listings', wrapAsync(async (req, res) => {
     const allListings = await Listing.find({});
     res.render("listings/index.ejs", { allListings });
 }));
-
+//signup route
 app.get("/signup",(req,res)=>{
     res.render("users/signup.ejs");
 });
+app.post("/signup",wrapAsync(async(req,res)=>{
+    const {email,username,password} = req.body;
+    const user = new User({email,username});
+    const registeredUser = await User.register(user,password);
+    req.login(registeredUser,err=>{
+        if(err) return next(err);
+        req.flash('success', 'Welcome to Wanderlust!');
+        res.redirect('/listings');
+    });
+}));
 
 // Root Route
 app.get('/', (req, res) => {
