@@ -13,6 +13,7 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user.js');
+const { isLoggedIn } = require('./middleware.js');
 
 
 const app = express();
@@ -86,7 +87,7 @@ const validate = schema => (req, res, next) => {
 
 // Routes
 // New Listing Form
-app.get("/listings/new", (req, res) => {
+app.get("/listings/new", isLoggedIn,(req, res) => {
     res.render("listings/new.ejs");
 });
 
@@ -99,7 +100,7 @@ app.post("/listings", validate(listingSchema), wrapAsync(async (req, res) => {
 }));
 
 // Edit Listing Form
-app.get("/listings/:id/edit", wrapAsync(async (req, res) => {
+app.get("/listings/:id/edit", isLoggedIn,wrapAsync(async (req, res) => {
     const { id } = req.params;
     const listing = await Listing.findById(id);
     if (!listing) {
@@ -109,7 +110,7 @@ app.get("/listings/:id/edit", wrapAsync(async (req, res) => {
 }));
 
 // Update Listing
-app.put("/listings/:id", validate(listingSchema), wrapAsync(async (req, res) => {
+app.put("/listings/:id",isLoggedIn, validate(listingSchema), wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndUpdate(id, req.body.listing);
     req.flash('success', 'Successfully updated a listing!');
@@ -117,7 +118,7 @@ app.put("/listings/:id", validate(listingSchema), wrapAsync(async (req, res) => 
 }));
 
 // Delete Listing
-app.delete("/listings/:id", wrapAsync(async (req, res) => {
+app.delete("/listings/:id",isLoggedIn, wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndDelete(id);
     req.flash('success', 'Successfully deleted a listing!');
