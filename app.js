@@ -44,6 +44,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req,res,next)=>{
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
+    res.locals.currentUser = req.user;
     next();
 });
 
@@ -189,6 +190,17 @@ app.post("/login",passport.authenticate('local',{failureFlash:true,failureRedire
     req.flash('success', 'Welcome back!');
     res.redirect('/listings');
 });
+//logout route
+app.get("/logout",(req,res,next)=>{
+    req.logout((err)=>{
+        if(err) {return next(err);
+        }
+        req.flash('success', 'Goodbye!');
+        res.redirect('/listings');
+    });
+});
+
+
 
 // Root Route
 app.get('/', (req, res) => {
