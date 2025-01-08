@@ -46,6 +46,15 @@ app.use((req,res,next)=>{
     next();
 });
 
+app.get("/demouser", async (req, res) => { 
+    let fakeUser = new User({
+        email: "princekp@gmail.com",
+        username: "princekp"
+    });
+    let registeredUser = await User.register(fakeUser, "password");
+    res.send(registeredUser);
+});
+
 
 // Connect to MongoDB
 async function main() {
