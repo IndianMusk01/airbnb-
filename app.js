@@ -167,6 +167,10 @@ app.get('/listings', wrapAsync(async (req, res) => {
     res.render("listings/index.ejs", { allListings });
 }));
 
+app.get("/signup",(req,res)=>{
+    res.render("users/signup.ejs");
+});
+
 // Root Route
 app.get('/', (req, res) => {
     res.redirect('/listings');
