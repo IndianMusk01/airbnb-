@@ -13,8 +13,7 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user.js');
-const { isLoggedIn } = require('./middleware.js');
-
+const { isLoggedIn, saveRedirectUrl } = require('./middleware.js');
 
 const app = express();
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
@@ -47,7 +46,7 @@ app.use((req,res,next)=>{
     res.locals.currentUser = req.user;
     next();
 });
-
+//creating demo user
 app.get("/demouser", async (req, res) => { 
     let fakeUser = new User({
         email: "princekp@gmail.com",
@@ -155,7 +154,7 @@ app.get('/listings/:id', wrapAsync(async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ExpressError('Invalid ID format', 400);
     }
-    const listing = await Listing.findById(id).populate('reviews');
+    const listing = await Listing.findById(id).populate('reviews').populate('owner');
     if(!listing){
         req.flash('error', 'Cannot find that listing!');
         res.redirect('/listings');
@@ -186,9 +185,9 @@ app.post("/signup",wrapAsync(async(req,res)=>{
 app.get("/login",(req,res)=>{
     res.render("users/login.ejs");
 });
-app.post("/login",passport.authenticate('local',{failureFlash:true,failureRedirect:'/login'}),(req,res)=>{
+app.post("/login", saveRedirectUrl ,passport.authenticate('local',{failureFlash:true,failureRedirect:'/login'}),async(req,res)=>{
     req.flash('success', 'Welcome back!');
-    res.redirect('/listings');
+    res.redirect(res.locals.redirectUrl || '/listings');
 });
 //logout route
 app.get("/logout",(req,res,next)=>{
